@@ -1,29 +1,15 @@
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import Threads from "./components/Threads";
+import "./App.css";
 
 function App() {
   return (
-    <div className="flex h-screen items-center justify-center gap-4 bg-background p-4">
-      <Card className="w-[350px]">
-        <CardHeader>
-          <CardTitle>Tailwind v4 Upgrade</CardTitle>
-          <CardDescription>Shadcn UI running on Tailwind CSS v4.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p>This card is styled using the new configuration.</p>
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <Button variant="outline">Cancel</Button>
-          <Button>Deploy</Button>
-        </CardFooter>
-      </Card>
+    <div className="w-screen h-screen relative">
+      <Threads
+        color={[0.1411764705882353, 0.5137254901960784, 1]}
+        amplitude={3}
+        distance={0.2}
+        enableMouseInteraction={false}
+      />
     </div>
   )
 }
