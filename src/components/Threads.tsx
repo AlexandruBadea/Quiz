@@ -19,6 +19,7 @@ precision highp float;
 uniform float iTime;
 uniform vec3 iResolution;
 uniform vec3 uColor;
+uniform float uOpacity;
 uniform float uAmplitude;
 uniform float uDistance;
 uniform vec2 uMouse;
@@ -112,7 +113,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     }
 
     float colorVal = 1.0 - line_strength;
-    fragColor = vec4(uColor * colorVal, colorVal);
+    fragColor = vec4(uColor * colorVal, colorVal * uOpacity);
 }
 
 void main() {
@@ -121,17 +122,21 @@ void main() {
 `;
 
 interface ThreadsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "color"> {
-    color?: [number, number, number];
+    color?: [number, number, number] | string;
+    opacity?: number;
     amplitude?: number;
     distance?: number;
     enableMouseInteraction?: boolean;
+    enableBackground?: boolean;
 }
 
 const Threads: React.FC<ThreadsProps> = ({
-    color = [1, 1, 1],
+    color = "#ffffff",
+    opacity = 1,
     amplitude = 1,
     distance = 0,
     enableMouseInteraction = false,
+    enableBackground = true,
     ...rest
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -157,7 +162,8 @@ const Threads: React.FC<ThreadsProps> = ({
                 iResolution: {
                     value: new Color(gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height)
                 },
-                uColor: { value: new Color(...color) },
+                uColor: { value: new Color(color) },
+                uOpacity: { value: opacity },
                 uAmplitude: { value: amplitude },
                 uDistance: { value: distance },
                 uMouse: { value: new Float32Array([0.5, 0.5]) }
@@ -227,9 +233,16 @@ const Threads: React.FC<ThreadsProps> = ({
             const ext = gl.getExtension('WEBGL_lose_context');
             if (ext) ext.loseContext();
         };
-    }, [color, amplitude, distance, enableMouseInteraction]);
+    }, [color, amplitude, distance, enableMouseInteraction, opacity]);
 
-    return <div ref={containerRef} className="threads-container" {...rest} />;
+    return (
+        <div
+            ref={containerRef}
+            className="threads-container"
+            style={{ backgroundColor: enableBackground ? undefined : 'transparent' }}
+            {...rest}
+        />
+    );
 };
 
 export default Threads;
